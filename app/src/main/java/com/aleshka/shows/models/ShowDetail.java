@@ -9,7 +9,7 @@ public class ShowDetail {
     @SerializedName("url")
     private String url;
 
-    @SerializedName("description ")
+    @SerializedName("description")
     private String description;
 
     @SerializedName("runtime")

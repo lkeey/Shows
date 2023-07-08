@@ -1,6 +1,9 @@
 package com.aleshka.shows.activities;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,7 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
@@ -17,13 +21,17 @@ import com.aleshka.shows.R;
 import com.aleshka.shows.adapters.ImageSliderAdapter;
 import com.aleshka.shows.databinding.ActivityShowDetailBinding;
 import com.aleshka.shows.models.Show;
+import com.aleshka.shows.responces.ShowDetailResponse;
 import com.aleshka.shows.viewModels.ShowDetailViewModel;
+
+import java.util.Locale;
 
 public class ShowDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "ActivityShowDetail";
     private ActivityShowDetailBinding activityShowDetailBinding;
     private ShowDetailViewModel viewModel;
+    private Show receivedShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +47,42 @@ public class ShowDetailActivity extends AppCompatActivity {
         getShowDetail();
     }
 
+    private void setListeners(ShowDetailResponse showDetailResponse) {
+
+        activityShowDetailBinding.btnBack.setOnClickListener(view -> onBackPressed());
+
+        activityShowDetailBinding.readMore.setOnClickListener(view -> {
+            if (activityShowDetailBinding.readMore.getText().toString().equals(getString(R.string.read_more))) {
+                activityShowDetailBinding.textDescription.setMaxLines(Integer.MAX_VALUE);
+                activityShowDetailBinding.textDescription.setEllipsize(null);
+                activityShowDetailBinding.readMore.setText(R.string.read_less);
+            } else {
+                activityShowDetailBinding.textDescription.setMaxLines(4);
+                activityShowDetailBinding.textDescription.setEllipsize(TextUtils.TruncateAt.END);
+                activityShowDetailBinding.readMore.setText(R.string.read_more);
+            }
+        });
+
+        activityShowDetailBinding.btnWebSite.setOnClickListener(view -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(showDetailResponse.getShowDetail().getUrl()));
+            startActivity(intent);
+        });
+
+        activityShowDetailBinding.btnWebSite.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.btnEpisodes.setVisibility(View.VISIBLE);
+
+    }
+
     private void getShowDetail() {
         activityShowDetailBinding.setIsLoading(true);
 
-        Show show = (Show) getIntent().getSerializableExtra("show");
+        receivedShow = (Show) getIntent().getSerializableExtra("show");
 
-        viewModel.getShowDetail(String.valueOf(show.getId())).observe(
+        viewModel.getShowDetail(String.valueOf(receivedShow.getId())).observe(
             ShowDetailActivity.this,
             showDetailResponse -> {
-                Log.i(TAG, "received show - " + show.getName());
+                Log.i(TAG, "received show - " + receivedShow.getName());
                 Log.i(TAG, "response - " + showDetailResponse.getShowDetail());
 
                 activityShowDetailBinding.setIsLoading(false);
@@ -58,9 +93,54 @@ public class ShowDetailActivity extends AppCompatActivity {
 
                         loadImgSlider(showDetailResponse.getShowDetail().getPictures());
                     }
+
+                    setData(showDetailResponse);
+
+                    setListeners(showDetailResponse);
+
+                    loadBasicShowDetails();
                 }
             }
         );
+    }
+
+    private void setData(ShowDetailResponse showDetailResponse) {
+
+        activityShowDetailBinding.setShowImgURL(showDetailResponse.getShowDetail().getImgPath());
+        activityShowDetailBinding.imgShow.setVisibility(View.VISIBLE);
+
+        Log.i(TAG, "description - " + showDetailResponse.getShowDetail().getDescription());
+
+        activityShowDetailBinding.setDescription(String.valueOf(
+                HtmlCompat.fromHtml(
+                        showDetailResponse.getShowDetail().getDescription(),
+                        HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+        ));
+
+        activityShowDetailBinding.textDescription.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.readMore.setVisibility(View.VISIBLE);
+
+        activityShowDetailBinding.setRating(
+                String.format(
+                        Locale.getDefault(),
+                        "%.2f",
+                        Double.parseDouble(showDetailResponse.getShowDetail().getRating())
+                )
+        );
+
+        if (showDetailResponse.getShowDetail().getGenres() != null) {
+            activityShowDetailBinding.setGenre(showDetailResponse.getShowDetail().getGenres()[0]);
+        } else {
+            activityShowDetailBinding.setGenre(getString(R.string.n_a));
+        }
+
+        activityShowDetailBinding.setRuntime(showDetailResponse.getShowDetail().getRuntime() + getString(R.string.min));
+
+        activityShowDetailBinding.divider1st.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.llInfo.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.divider2nd.setVisibility(View.VISIBLE);
+
     }
 
     private void loadImgSlider(String[] images) {
@@ -119,5 +199,15 @@ public class ShowDetailActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    private void loadBasicShowDetails() {
+        activityShowDetailBinding.setShow(receivedShow);
+
+        activityShowDetailBinding.textName.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.textNetwork.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.textStarted.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.textStatus.setVisibility(View.VISIBLE);
+
     }
 }
