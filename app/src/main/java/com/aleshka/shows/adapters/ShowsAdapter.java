@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.aleshka.shows.R;
 import com.aleshka.shows.databinding.ItemContainerTvShowBinding;
+import com.aleshka.shows.listeners.ShowListener;
 import com.aleshka.shows.models.Show;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ShowViewHold
 
     private static final String TAG = "AdapterShows";
     private final List<Show> shows;
+    private final ShowListener listener;
+
     private LayoutInflater inflater;
 
-    public ShowsAdapter(List<Show> shows) {
-        Log.i(TAG, "shows - " + shows.size());
+    public ShowsAdapter(List<Show> shows, ShowListener listener) {
         this.shows = shows;
+        this.listener = listener;
     }
 
     @NonNull
@@ -45,11 +48,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ShowViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ShowViewHolder holder, int position) {
-        try {
-            holder.bindShow(shows.get(position));
-        } catch (Exception e) {
-            Log.i(TAG, e.getMessage());
-        }
+        holder.bindShow(shows.get(position));
     }
 
 
@@ -58,7 +57,7 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ShowViewHold
         return shows.size();
     }
 
-     static class ShowViewHolder extends RecyclerView.ViewHolder {
+    class ShowViewHolder extends RecyclerView.ViewHolder {
 
         private final ItemContainerTvShowBinding binding;
 
@@ -70,8 +69,13 @@ public class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ShowViewHold
         }
 
         public void bindShow(Show show) {
+
+            Log.i(TAG, "show - " + show.getName());
+
             binding.setShow(show);
             binding.executePendingBindings();
+
+            binding.getRoot().setOnClickListener(view -> listener.onShowClicked(show));
         }
 
     }

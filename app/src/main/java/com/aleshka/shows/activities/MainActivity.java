@@ -1,5 +1,6 @@
 package com.aleshka.shows.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -13,13 +14,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.aleshka.shows.R;
 import com.aleshka.shows.adapters.ShowsAdapter;
 import com.aleshka.shows.databinding.ActivityMainBinding;
+import com.aleshka.shows.listeners.ShowListener;
 import com.aleshka.shows.models.Show;
 import com.aleshka.shows.viewModels.PopularShowsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ShowListener {
 
     private static final String TAG = "ActivityMain";
     private ActivityMainBinding activityMainBinding;
@@ -41,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initialize() {
-        adapter = new ShowsAdapter(shows);
+        adapter = new ShowsAdapter(shows, MainActivity.this);
 
         activityMainBinding.recyclerShows.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         activityMainBinding.recyclerShows.setAdapter(adapter);
@@ -94,5 +96,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             activityMainBinding.setIsLoadingMore(activityMainBinding.getIsLoadingMore() == null || !activityMainBinding.getIsLoadingMore());
         }
+    }
+
+    @Override
+    public void onShowClicked(Show show) {
+        Intent intent = new Intent(MainActivity.this, ShowDetailActivity.class);
+        intent.putExtra("show", show);
+        startActivity(intent);
     }
 }
