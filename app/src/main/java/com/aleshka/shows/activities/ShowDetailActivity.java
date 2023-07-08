@@ -1,12 +1,15 @@
 package com.aleshka.shows.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -18,11 +21,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.aleshka.shows.R;
+import com.aleshka.shows.adapters.EpisodesAdapter;
 import com.aleshka.shows.adapters.ImageSliderAdapter;
 import com.aleshka.shows.databinding.ActivityShowDetailBinding;
+import com.aleshka.shows.databinding.BottomSheetEpisodesBinding;
 import com.aleshka.shows.models.Show;
 import com.aleshka.shows.responces.ShowDetailResponse;
 import com.aleshka.shows.viewModels.ShowDetailViewModel;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Locale;
 
@@ -32,6 +39,9 @@ public class ShowDetailActivity extends AppCompatActivity {
     private ActivityShowDetailBinding activityShowDetailBinding;
     private ShowDetailViewModel viewModel;
     private Show receivedShow;
+    private BottomSheetDialog dialog;
+    private BottomSheetEpisodesBinding bottomBinding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +77,38 @@ public class ShowDetailActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(showDetailResponse.getShowDetail().getUrl()));
             startActivity(intent);
+        });
+
+        activityShowDetailBinding.btnEpisodes.setOnClickListener(view -> {
+            if (dialog == null) {
+                dialog = new BottomSheetDialog(ShowDetailActivity.this);
+                bottomBinding = DataBindingUtil.inflate(
+                        LayoutInflater.from(ShowDetailActivity.this),
+                        R.layout.bottom_sheet_episodes,
+                        findViewById(R.id.episodeContainer),
+                        false
+                );
+
+                dialog.setContentView(bottomBinding.getRoot());
+                bottomBinding.episodes.setAdapter(new EpisodesAdapter(showDetailResponse.getShowDetail().getEpisodes()));
+                bottomBinding.textTitle.setText(
+                        String.format("Episodes %s", receivedShow.getName())
+                );
+
+                bottomBinding.imgClose.setOnClickListener(view1 -> dialog.dismiss());
+
+                FrameLayout frameLayout = dialog.findViewById(
+                        com.google.android.material.R.id.design_bottom_sheet
+                );
+
+                if (frameLayout != null) {
+                    BottomSheetBehavior<View> behavior = BottomSheetBehavior.from(frameLayout);
+                    behavior.setPeekHeight(Resources.getSystem().getDisplayMetrics().heightPixels);
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+
+                dialog.show();
+            }
         });
 
         activityShowDetailBinding.btnWebSite.setVisibility(View.VISIBLE);
