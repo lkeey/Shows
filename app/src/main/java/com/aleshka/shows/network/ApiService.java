@@ -1,6 +1,5 @@
 package com.aleshka.shows.network;
 
-import com.aleshka.shows.models.Show;
 import com.aleshka.shows.responces.ShowResponse;
 
 import retrofit2.Call;

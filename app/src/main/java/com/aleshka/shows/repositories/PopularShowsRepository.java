@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.aleshka.shows.models.Show;
 import com.aleshka.shows.network.ApiClient;
 import com.aleshka.shows.network.ApiService;
 import com.aleshka.shows.responces.ShowResponse;
@@ -15,7 +14,7 @@ import retrofit2.Response;
 
 public class PopularShowsRepository {
 
-    private ApiService apiService;
+    private final ApiService apiService;
 
     public PopularShowsRepository() {
         apiService = ApiClient.getRetrofit().create(ApiService.class);

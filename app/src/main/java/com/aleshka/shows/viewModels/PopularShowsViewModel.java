@@ -8,7 +8,7 @@ import com.aleshka.shows.responces.ShowResponse;
 
 public class PopularShowsViewModel extends ViewModel {
 
-    private PopularShowsRepository popularShowsRepository;
+    private final PopularShowsRepository popularShowsRepository;
 
     public PopularShowsViewModel() {
         popularShowsRepository = new PopularShowsRepository();
