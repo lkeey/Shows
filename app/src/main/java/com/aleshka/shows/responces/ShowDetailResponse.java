@@ -11,8 +11,4 @@ public class ShowDetailResponse {
     public ShowDetail getShowDetail() {
         return showDetail;
     }
-
-    public void setShowDetail(ShowDetail showDetail) {
-        this.showDetail = showDetail;
-    }
 }

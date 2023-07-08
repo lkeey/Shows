@@ -16,7 +16,7 @@ public interface ApiService {
 
     @GET("show-details")
     Call<ShowDetailResponse> getShowDetail(
-            @Query("q ") String showId
+            @Query("q") String showId
     );
 
 }

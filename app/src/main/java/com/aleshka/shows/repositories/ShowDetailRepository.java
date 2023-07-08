@@ -1,5 +1,7 @@
 package com.aleshka.shows.repositories;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,6 +16,7 @@ import retrofit2.Response;
 
 public class ShowDetailRepository {
 
+    private static final String TAG = "RepositoryShowDetail";
     private ApiService apiService;
 
     public ShowDetailRepository() {
@@ -21,16 +24,20 @@ public class ShowDetailRepository {
     }
 
     public LiveData<ShowDetailResponse> getShowDetail(String showId) {
-        MutableLiveData<ShowDetailResponse> data = new MutableLiveData<>();
+        MutableLiveData<ShowDetailResponse> data = new MutableLiveData<>(); 
 
         apiService.getShowDetail(showId).enqueue(new Callback<ShowDetailResponse>() {
             @Override
             public void onResponse(@NonNull Call<ShowDetailResponse> call, @NonNull Response<ShowDetailResponse> response) {
+                Log.i(TAG, "value - " + response.body());
+
                 data.setValue(response.body());
             }
 
             @Override
             public void onFailure(@NonNull Call<ShowDetailResponse> call, @NonNull Throwable t) {
+                Log.i(TAG, "error - " + t.getMessage());
+
                 data.setValue(null);
             }
         });

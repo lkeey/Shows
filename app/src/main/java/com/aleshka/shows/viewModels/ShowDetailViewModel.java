@@ -8,7 +8,7 @@ import com.aleshka.shows.responces.ShowDetailResponse;
 
 public class ShowDetailViewModel extends ViewModel {
 
-    private ShowDetailRepository showDetailRepository;
+    private final ShowDetailRepository showDetailRepository;
 
     public ShowDetailViewModel() {
         showDetailRepository = new ShowDetailRepository();

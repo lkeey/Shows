@@ -17,8 +17,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        tools:context=".activities.ShowDetailActivity">
+        tools:context=".activities.ShowDetailActivity"
+        android:background="@color/colorPrimary">
 
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_160sdp"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            android:id="@+id/viewFading"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:background="@drawable/background_fading_edge"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/viewPager"/>
+        
+        <LinearLayout
+            android:id="@+id/llSlider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/_8sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/viewFading">
+
+        </LinearLayout>
+        
         <ProgressBar
             android:layout_width="@dimen/_25sdp"
             android:layout_height="@dimen/_25sdp"

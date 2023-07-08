@@ -39,7 +39,7 @@ public class BindingAdapters {
                     });
 
         } catch (Exception e) {
-            Log.i(TAG, "er - " + e.getMessage());
+            Log.i(TAG, "error - " + e.getMessage());
         }
     }
 }
