@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -32,6 +33,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Locale;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ShowDetailActivity extends AppCompatActivity {
 
@@ -111,8 +116,20 @@ public class ShowDetailActivity extends AppCompatActivity {
             }
         });
 
+        activityShowDetailBinding.imgWatchList.setOnClickListener(view -> new CompositeDisposable().add(
+            viewModel.addToWatchList(receivedShow)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(() -> {
+                    activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_check);
+                    Toast.makeText(ShowDetailActivity.this, getString(R.string.added_to_watch_list), Toast.LENGTH_SHORT).show();
+                })
+        ));
+
+
         activityShowDetailBinding.btnWebSite.setVisibility(View.VISIBLE);
         activityShowDetailBinding.btnEpisodes.setVisibility(View.VISIBLE);
+        activityShowDetailBinding.imgWatchList.setVisibility(View.VISIBLE);
 
     }
 
