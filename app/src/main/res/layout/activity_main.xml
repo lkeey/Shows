@@ -17,8 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
-        android:background="@color/colorPrimary"
-        tools:context=".MainActivity">
+        tools:context=".activities.MainActivity">
         
         <LinearLayout
             android:id="@+id/layoutHeader"
@@ -67,13 +66,13 @@
         </LinearLayout>
         
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerShows"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:orientation="vertical"
             android:padding="@dimen/_4sdp"
-            android:visibility="gone"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/layoutHeader"/>
 
