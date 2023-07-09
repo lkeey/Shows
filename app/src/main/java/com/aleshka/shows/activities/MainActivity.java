@@ -2,8 +2,6 @@ package com.aleshka.shows.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ShowListener {
-
-    private static final String TAG = "ActivityMain";
     private ActivityMainBinding activityMainBinding;
     private PopularShowsViewModel viewModel;
     private final List<Show> shows = new ArrayList<>();
@@ -51,6 +47,11 @@ public class MainActivity extends AppCompatActivity implements ShowListener {
 
         activityMainBinding.imgWatchList.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, WatchListActivity.class);
+            startActivity(intent);
+        });
+
+        activityMainBinding.imgSearch.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
             startActivity(intent);
         });
 

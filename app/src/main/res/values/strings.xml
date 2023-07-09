@@ -12,4 +12,5 @@
     <string name="added_to_watch_list">Added to watch list!</string>
     <string name="watch_list">Watch List</string>
     <string name="removed_from_watch_list">Removed from watch list!</string>
+    <string name="write_show">Write Show</string>
 </resources>

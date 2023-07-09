@@ -19,4 +19,10 @@ public interface ApiService {
             @Query("q") String showId
     );
 
+    @GET("search")
+    Call<ShowResponse> searchShow(
+            @Query("q") String query,
+            @Query("page") int page
+    );
+
 }
