@@ -3,6 +3,7 @@ package com.aleshka.shows.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +48,11 @@ public class MainActivity extends AppCompatActivity implements ShowListener {
 
         activityMainBinding.recyclerShows.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         activityMainBinding.recyclerShows.setAdapter(adapter);
+
+        activityMainBinding.imgWatchList.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, WatchListActivity.class);
+            startActivity(intent);
+        });
 
         activityMainBinding.recyclerShows.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
