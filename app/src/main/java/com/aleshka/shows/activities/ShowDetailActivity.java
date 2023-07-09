@@ -28,6 +28,7 @@ import com.aleshka.shows.databinding.ActivityShowDetailBinding;
 import com.aleshka.shows.databinding.BottomSheetEpisodesBinding;
 import com.aleshka.shows.models.Show;
 import com.aleshka.shows.responces.ShowDetailResponse;
+import com.aleshka.shows.utilities.TempDataHolder;
 import com.aleshka.shows.viewModels.ShowDetailViewModel;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -135,6 +136,9 @@ public class ShowDetailActivity extends AppCompatActivity {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(() -> {
                             isInWatchList = false;
+
+                            TempDataHolder.IS_WATCH_LIST_UPDATED = true;
+
                             activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_eye);
 
                             Toast.makeText(ShowDetailActivity.this, getString(R.string.removed_from_watch_list), Toast.LENGTH_SHORT).show();
@@ -149,6 +153,8 @@ public class ShowDetailActivity extends AppCompatActivity {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(() -> {
+                            TempDataHolder.IS_WATCH_LIST_UPDATED = true;
+
                             activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_check);
 
                             Toast.makeText(ShowDetailActivity.this, getString(R.string.added_to_watch_list), Toast.LENGTH_SHORT).show();

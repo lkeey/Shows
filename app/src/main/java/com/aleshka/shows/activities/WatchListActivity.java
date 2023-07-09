@@ -14,6 +14,7 @@ import com.aleshka.shows.adapters.WatchListAdapter;
 import com.aleshka.shows.databinding.ActivityWatchListBinding;
 import com.aleshka.shows.listeners.WatchListListener;
 import com.aleshka.shows.models.Show;
+import com.aleshka.shows.utilities.TempDataHolder;
 import com.aleshka.shows.viewModels.WatchListViewModel;
 
 import java.util.ArrayList;
@@ -43,13 +44,19 @@ public class WatchListActivity extends AppCompatActivity implements WatchListLis
     protected void onResume() {
         super.onResume();
 
-        loadWatchList();
+        if (TempDataHolder.IS_WATCH_LIST_UPDATED) {
+            loadWatchList();
+
+            TempDataHolder.IS_WATCH_LIST_UPDATED = false;
+        }
     }
 
     private void init() {
         viewModel = new ViewModelProvider(WatchListActivity.this).get(WatchListViewModel.class);
 
         binding.btnBack.setOnClickListener(view -> onBackPressed());
+
+        loadWatchList();
     }
 
     private void loadWatchList() {
