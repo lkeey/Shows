@@ -30,4 +30,5 @@ public class WatchListViewModel extends AndroidViewModel {
     public Completable removeShowFromWatchList(Show show) {
         return showsDatabase.showDao().removeFromWatchList(show);
     }
+
 }

@@ -13,6 +13,7 @@ import com.aleshka.shows.repositories.ShowDetailRepository;
 import com.aleshka.shows.responces.ShowDetailResponse;
 
 import io.reactivex.rxjava3.core.Completable;
+import io.reactivex.rxjava3.core.Flowable;
 
 public class ShowDetailViewModel extends AndroidViewModel {
 
@@ -34,4 +35,12 @@ public class ShowDetailViewModel extends AndroidViewModel {
         return showsDatabase.showDao().addToWatchList(show);
     }
 
+    public Flowable<Show> getShowFromWatchList(String showId) {
+        return showsDatabase.showDao().getShowFromWatchList(showId);
+    }
+
+
+    public Completable removeShowFromWatchList(Show show) {
+        return showsDatabase.showDao().removeFromWatchList(show);
+    }
 }

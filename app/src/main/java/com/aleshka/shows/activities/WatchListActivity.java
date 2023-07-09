@@ -26,10 +26,10 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class WatchListActivity extends AppCompatActivity implements WatchListListener {
 
     private static final String TAG = "ActivityWatchList";
+    private final List<Show> watchList = new ArrayList<>();
     private ActivityWatchListBinding binding;
     private WatchListViewModel viewModel;
     private WatchListAdapter adapter;
-    private List<Show> watchList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,4 +102,6 @@ public class WatchListActivity extends AppCompatActivity implements WatchListLis
                 })
         );
     }
+
+
 }

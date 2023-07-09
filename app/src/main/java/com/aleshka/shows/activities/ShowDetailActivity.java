@@ -41,6 +41,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class ShowDetailActivity extends AppCompatActivity {
 
     private static final String TAG = "ActivityShowDetail";
+    private boolean isInWatchList = false;
     private ActivityShowDetailBinding activityShowDetailBinding;
     private ShowDetailViewModel viewModel;
     private Show receivedShow;
@@ -57,9 +58,16 @@ public class ShowDetailActivity extends AppCompatActivity {
     }
 
     private void init() {
-        viewModel = new ViewModelProvider(this).get(ShowDetailViewModel.class);
+        try {
+            viewModel = new ViewModelProvider(this).get(ShowDetailViewModel.class);
 
-        getShowDetail();
+            getShowDetail();
+
+            checkIsShowInWatchList();
+
+        } catch (Exception e) {
+            Log.i(TAG, e.getMessage());
+        }
     }
 
     private void setListeners(ShowDetailResponse showDetailResponse) {
@@ -116,15 +124,40 @@ public class ShowDetailActivity extends AppCompatActivity {
             }
         });
 
-        activityShowDetailBinding.imgWatchList.setOnClickListener(view -> new CompositeDisposable().add(
-            viewModel.addToWatchList(receivedShow)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(() -> {
-                    activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_check);
-                    Toast.makeText(ShowDetailActivity.this, getString(R.string.added_to_watch_list), Toast.LENGTH_SHORT).show();
-                })
-        ));
+        activityShowDetailBinding.imgWatchList.setOnClickListener(view -> {
+
+            CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+            if (isInWatchList) {
+                compositeDisposable.add(
+                    viewModel.removeShowFromWatchList(receivedShow)
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            isInWatchList = false;
+                            activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_eye);
+
+                            Toast.makeText(ShowDetailActivity.this, getString(R.string.removed_from_watch_list), Toast.LENGTH_SHORT).show();
+
+                            compositeDisposable.dispose();
+                        })
+                );
+
+            } else {
+                compositeDisposable.add(
+                    viewModel.addToWatchList(receivedShow)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(() -> {
+                            activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_check);
+
+                            Toast.makeText(ShowDetailActivity.this, getString(R.string.added_to_watch_list), Toast.LENGTH_SHORT).show();
+
+                            compositeDisposable.dispose();
+                        })
+                );
+            }
+        });
 
 
         activityShowDetailBinding.btnWebSite.setVisibility(View.VISIBLE);
@@ -267,6 +300,23 @@ public class ShowDetailActivity extends AppCompatActivity {
         activityShowDetailBinding.textNetwork.setVisibility(View.VISIBLE);
         activityShowDetailBinding.textStarted.setVisibility(View.VISIBLE);
         activityShowDetailBinding.textStatus.setVisibility(View.VISIBLE);
+    }
 
+    private void checkIsShowInWatchList() {
+
+        Log.i(TAG, "show - " + receivedShow.getId());
+
+        CompositeDisposable compositeDisposable = new CompositeDisposable();
+        compositeDisposable.add(
+            viewModel.getShowFromWatchList(String.valueOf(receivedShow.getId()))
+            .subscribeOn(Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(show -> {
+                isInWatchList = true;
+
+                activityShowDetailBinding.imgWatchList.setImageResource(R.drawable.ic_check);
+                compositeDisposable.dispose();
+            })
+        );
     }
 }
